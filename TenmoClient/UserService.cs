@@ -3,7 +3,7 @@
 namespace TenmoClient
 {
     /// <summary>
-    /// This is a static class and cannot be instantiated.
+    /// This is a static class and cannot be instantiated. Its job is to track information about the logged-in user.
     /// It's also not the best class in general, but you can use the UserId, IsLoggedIn, and Token methods
     /// to get information on the currently logged-in user.
     /// </summary>

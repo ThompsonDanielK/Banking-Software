@@ -77,26 +77,33 @@ namespace TenmoClient
                         case 1: // View Balance
                             Console.WriteLine("NOT IMPLEMENTED!"); // TODO: Implement me
                             break;
+
                         case 2: // View Past Transfers
                             Console.WriteLine("NOT IMPLEMENTED!"); // TODO: Implement me
                             break;
+
                         case 3: // View Pending Requests
                             Console.WriteLine("NOT IMPLEMENTED!"); // TODO: Implement me
                             break;
+
                         case 4: // Send TE Bucks
                             Console.WriteLine("NOT IMPLEMENTED!"); // TODO: Implement me
                             break;
+
                         case 5: // Request TE Bucks
                             Console.WriteLine("NOT IMPLEMENTED!"); // TODO: Implement me
                             break;
+
                         case 6: // Log in as someone else
                             Console.WriteLine();
                             UserService.ClearLoggedInUser(); //wipe out previous login info
                             return; // Leaves the menu and should return as someone else
+
                         case 0: // Quit
                             Console.WriteLine("Goodbye!");
                             quitRequested = true;
                             return;
+
                         default:
                             Console.WriteLine("That doesn't seem like a valid choice.");
                             break;
@@ -124,11 +131,7 @@ namespace TenmoClient
             while (!UserService.IsLoggedIn) //will keep looping until user is logged in
             {
                 LoginUser loginUser = consoleService.PromptForLogin();
-                API_User user = authService.Login(loginUser);
-                if (user != null)
-                {
-                    UserService.SetLogin(user);
-                }
+                authService.Login(loginUser);
             }
         }
     }

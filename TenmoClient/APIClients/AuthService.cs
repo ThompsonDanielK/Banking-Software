@@ -62,7 +62,7 @@ namespace TenmoClient
             if (response.ResponseStatus != ResponseStatus.Completed)
             {
                 Console.WriteLine("An error occurred communicating with the server.");
-                return null;
+                return false;
             }
             else if (!response.IsSuccessful)
             {
@@ -74,12 +74,15 @@ namespace TenmoClient
                 {
                     Console.WriteLine("An error response was received from the server. The status code is " + (int)response.StatusCode);
                 }
-                return null;
+                return false;
             }
             else
             {
+                UserService.SetLogin(response.Data);
+
                 client.Authenticator = new JwtAuthenticator(response.Data.Token);
-                return response.Data;
+
+                return true;
             }
         }
     }
