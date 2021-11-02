@@ -6,6 +6,9 @@ using TenmoServer.Security;
 
 namespace TenmoServer.Controllers
 {
+    /// <summary>
+    /// This class must ONLY have endpoints related to authentication. Other endpoints go in other controllers.
+    /// </summary>
     [Route("[controller]")]
     [ApiController]
     public class LoginController : ControllerBase

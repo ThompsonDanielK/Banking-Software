@@ -5,6 +5,9 @@ using TenmoClient.Data;
 
 namespace TenmoClient
 {
+    /// <summary>
+    /// This class must ONLY communicate with the LoginController on the server-side.
+    /// </summary>
     public class AuthService
     {
         private const string API_BASE_URL = "https://localhost:44315/";
@@ -49,7 +52,7 @@ namespace TenmoClient
             }
         }
 
-        public API_User Login(LoginUser loginUser)
+        public bool Login(LoginUser loginUser)
         {
             RestRequest request = new RestRequest(API_BASE_URL + "login");
             request.AddJsonBody(loginUser);
