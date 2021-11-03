@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using TenmoServer.DAO;
 using TenmoServer.Models;
@@ -28,6 +29,14 @@ namespace TenmoServer.Controllers
             user.Balance = balance;
 
             return Ok(user);
+        }
+
+        [HttpGet("{id}/UserList")]
+        public ActionResult GetUserList(int id)
+        {
+            IEnumerable<User> users = banking.GetUserListSQL(id);
+
+            return Ok(users);
         }
     }
 }
