@@ -81,7 +81,7 @@ namespace TenmoClient
                 UserService.SetLogin(response.Data);
 
                 client.Authenticator = new JwtAuthenticator(response.Data.Token);
-
+                
                 return true;
             }
         }
