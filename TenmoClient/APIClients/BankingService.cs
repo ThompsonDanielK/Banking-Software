@@ -92,5 +92,17 @@ namespace TenmoClient.APIClients
 
             return response.Data;
         }
+
+        public Transfers GetTransferDetails(List<Transfers> transferList, int transferId)
+        {
+            foreach (Transfers transfer in transferList)
+            {
+                if(transfer.transferId == transferId)
+                {
+                    return transfer;
+                }
+            }
+            return new Transfers();
+        }
     }
 }

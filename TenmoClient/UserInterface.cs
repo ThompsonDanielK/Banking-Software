@@ -84,7 +84,9 @@ namespace TenmoClient
                             break;
 
                         case 2: // View Past Transfers
-                            ListTransfers();
+                            List<Transfers> transferList = ListTransfers();
+                            int transferId = GetTransferId();
+                            ListTransfersDetails(bankingService.GetTransferDetails(transferList, transferId));
                             break;
 
                         case 3: // View Pending Requests
@@ -136,6 +138,30 @@ namespace TenmoClient
                     }
                 }
             } while (menuSelection != 0);
+        }
+
+        private int GetTransferId()
+        {
+            int transferId = 0;
+            bool transferIdLoop = true;
+            while (transferIdLoop)
+            {
+                Console.WriteLine("Please enter transfer ID to view details (0 to cancel): ");
+                string inputTransferId = Console.ReadLine();
+
+                bool isNumber = int.TryParse(inputTransferId, out transferId);
+                if (!isNumber)
+                {
+                    Console.WriteLine("Please enter a Transfer ID number!");
+                }
+                else
+                {
+                    transferIdLoop = false;
+                }
+                
+            }
+
+            return transferId;
         }
 
         private void HandleUserRegister()
@@ -250,14 +276,14 @@ namespace TenmoClient
             return userId;
         }
 
-        private void ListTransfers()
+        private List<Transfers> ListTransfers()
         {
             List<Transfers> transferList = bankingService.GetTransferList(UserService.UserId);
 
             if (transferList.Count < 1)
             {
                 Console.WriteLine("We could not complete your request");
-                return;
+                return transferList;
             }
 
             Console.WriteLine("-------------------------------------------");
@@ -271,6 +297,23 @@ namespace TenmoClient
             }
 
             Console.WriteLine("---------");
+
+            return transferList;
+        }
+
+        private void ListTransfersDetails(Transfers transfer)
+        {          
+
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine("Transfer Details");
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine($"Id: {transfer.transferId}");
+            Console.WriteLine($"From: {transfer.sendersUsername}");
+            Console.WriteLine($"To: {transfer.recipientsUsername}");
+            Console.WriteLine($"Type: {transfer.transferTypeDetails}");
+            Console.WriteLine($"Status: {transfer.transferStatus}");
+            Console.WriteLine($"Amount: {transfer.transferAmount.ToString("C")}");
+            
         }
     }
 }

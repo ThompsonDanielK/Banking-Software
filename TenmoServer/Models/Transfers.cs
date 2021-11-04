@@ -13,24 +13,54 @@ namespace TenmoServer.Models
 
         public decimal transferAmount { get; set; }
 
-        public int transferTypeId { get; set; }
+        public int transferTypeId { get; set; }     
 
-        public string transferType
+        public string transferType { get; set; } 
+        
+        public string transferTypeDetails
         {
             get
             {
-                if(this.transferTypeId == 1001)
+                if (transferTypeId == 1001)
                 {
-                    return "from ";
+                    return "Send";
                 }
                 else
                 {
-                    return "to ";
+                    return "Request";
                 }
             }
         }
 
         public string username { get; set; }
+
+        public string sendersUsername { get; set; }
+
+        public string recipientsUsername { get; set; }
+
+        public int transferStatusId { get; set; }
+
+        public string transferStatus
+        {
+            get
+            {
+                switch (transferStatusId)
+                {
+                    case 2001:
+                        return "Pending";
+
+                    case 2002:
+                        return "Approved";
+
+                    case 2003:
+                        return "Rejected";
+
+                    default:
+                        return "";
+
+                }
+            }
+        }
 
         public int transferId { get; set; }
 

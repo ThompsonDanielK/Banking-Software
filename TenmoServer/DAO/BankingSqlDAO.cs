@@ -157,10 +157,15 @@ namespace TenmoServer.DAO
                 {
                     conn.Open();
 
-                    const string retrieveAccountIdSql = "SELECT t.transfer_id, t.transfer_type_id, t.account_from, t.account_to, t.amount, u.username " +
-                        "FROM transfers t INNER JOIN accounts a ON a.account_id = t.account_from OR a.account_id = t.account_to " +
+                    const string retrieveAccountIdSql = "SELECT t.transfer_id, t.transfer_status_id, t.transfer_type_id, t.account_from, t.account_to, " +
+                        "t.amount, u.username AS senderUsername, uto.username AS receiverUsername " +
+                        "FROM transfers t " +
+                        "INNER JOIN accounts a ON a.account_id = t.account_from " +
                         "INNER JOIN users u ON u.user_id = a.user_id " +
-                        "WHERE a.user_id = @userId;";
+                        "INNER JOIN accounts ato ON ato.account_id = t.account_to " +
+                        "INNER JOIN users uto ON uto.user_id = ato.user_id " +
+                        "WHERE a.user_id = @userId OR ato.user_id = @userId";
+
 
                     using (SqlCommand command = new SqlCommand(retrieveAccountIdSql, conn))
                     {
@@ -168,17 +173,31 @@ namespace TenmoServer.DAO
 
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            if (reader.Read())
+                            while (reader.Read())
                             {
                                 Transfers transfers = new Transfers
-                                {
-                                    username = Convert.ToString(reader["username"]),
+                                {                                    
                                     transferId = Convert.ToInt32(reader["transfer_id"]),
+                                    transferStatusId = Convert.ToInt32(reader["transfer_status_id"]),
                                     transferTypeId = Convert.ToInt32(reader["transfer_type_id"]),
                                     recipientID = Convert.ToInt32(reader["account_to"]),
                                     senderId = Convert.ToInt32(reader["account_from"]),
-                                    transferAmount = Convert.ToDecimal(reader["amount"])
+                                    transferAmount = Convert.ToDecimal(reader["amount"]),
+                                    recipientsUsername = Convert.ToString(reader["receiverUsername"]),
+                                    sendersUsername = Convert.ToString(reader["senderUsername"])
+
                                 };
+                                if (transfers.senderId == GetAccountId(userId))
+                                {
+                                    transfers.transferType = "To: ";
+                                    transfers.username = Convert.ToString(reader["receiverUsername"]);
+                                }
+                                else
+                                {
+                                    transfers.transferType = "From: ";
+                                    transfers.username = Convert.ToString(reader["senderUsername"]);
+
+                                }
 
                                 transferList.Add(transfers);
 
@@ -194,5 +213,6 @@ namespace TenmoServer.DAO
             return transferList;
         }
 
+        
     }
 }
