@@ -12,7 +12,7 @@ namespace TenmoClient.APIClients
         private const string API_BASE_URL = "https://localhost:44315/";
         private readonly IRestClient client = new RestClient();
 
-        public string GetBalance(int id)
+        public decimal GetBalance(int id)
         {
             RestRequest request = new RestRequest($"{API_BASE_URL}banking/{id}");
 
@@ -20,17 +20,17 @@ namespace TenmoClient.APIClients
 
             if (response.ResponseStatus != ResponseStatus.Completed)
             {
-                return "Could not communicate with the server";
+                Console.WriteLine("Could not communicate with the server");
                 
             }
 
             if (!response.IsSuccessful)
             {
-                return $"Could not get bugs. Error status code {(int)response.StatusCode}";
+                Console.WriteLine($"Could not get bugs. Error status code {(int)response.StatusCode}");
                 
             }
 
-            return $"Your current account balance is: {response.Data.Balance.ToString("C")}";
+            return response.Data.Balance;
         }
         public List<User> GetUserList(int id)
         {

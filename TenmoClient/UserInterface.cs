@@ -79,7 +79,7 @@ namespace TenmoClient
                     switch (menuSelection)
                     {
                         case 1: // View Balance
-                            Console.WriteLine(bankingService.GetBalance(UserService.UserId));
+                            Console.WriteLine($"Your current account balance is: {bankingService.GetBalance(UserService.UserId).ToString("C")}");
                             //Console.WriteLine("NOT IMPLEMENTED!"); // TODO: Implement me
                             break;
 
@@ -166,23 +166,49 @@ namespace TenmoClient
 
         private void TransferInput(out int userId, out decimal transferAmount)
         {
-            Console.Write("Please enter User ID for transfer: ");
-            string inputUserId = Console.ReadLine();
-
-            bool isNumber = int.TryParse(inputUserId, out userId);
-            if (!isNumber)
+            userId = 0;
+            bool transferIdLoop = true;
+            while (transferIdLoop)
             {
-                Console.WriteLine("Please enter a User ID number!");
+                Console.Write("Please enter User ID for transfer: ");
+                string inputUserId = Console.ReadLine();
+
+                bool isNumber = int.TryParse(inputUserId, out userId);
+                if (!isNumber)
+                {
+                    Console.WriteLine("Please enter a User ID number!");
+                }
+                //else if(bankingService.GetUserList(UserService.UserId).Contains())
             }
-            //else if(bankingService.GetUserList(UserService.UserId).Contains())
 
-            Console.Write("Please enter amount of transfer");
-            string inputTransferAmount = Console.ReadLine();
-
-            bool isDecimal = decimal.TryParse(inputTransferAmount, out transferAmount);
-            if (!isDecimal)
+            bool transferAmountLoop = true;
+            transferAmount = 0M;
+            while (transferAmountLoop)
             {
-                Console.WriteLine("Please enter a decimal amount!");
+               
+                Console.Write("Please enter amount of transfer");
+                string inputTransferAmount = Console.ReadLine();
+
+                bool isDecimal = decimal.TryParse(inputTransferAmount, out transferAmount);
+                if (!isDecimal)
+                {
+                    Console.WriteLine("Please enter a decimal amount!");
+                    
+                }
+                else if (bankingService.GetBalance(UserService.UserId) < transferAmount)
+                {
+                    Console.WriteLine("You do not have sufficient funds to make this transfer.");
+                    
+                }
+                else if (transferAmount <= 0M)
+                {
+                    Console.WriteLine("Please enter a valid transfer amount");
+                   
+                }
+                else
+                {
+                    transferAmountLoop = false;
+                }
             }
             //else if ()//make sure amount is able to be removed from balance
             //make sure amount not 0 OR negative
