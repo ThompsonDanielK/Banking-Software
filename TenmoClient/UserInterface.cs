@@ -93,6 +93,7 @@ namespace TenmoClient
 
                         case 4: // Send TE Bucks
                             ListUsers();
+                            TransferInput(out int userId,out decimal transferAmount);
                             break;
 
                         case 5: // Request TE Bucks
@@ -161,6 +162,30 @@ namespace TenmoClient
             }
 
             Console.WriteLine("---------");
+        }
+
+        private void TransferInput(out int userId, out decimal transferAmount)
+        {
+            Console.Write("Please enter User ID for transfer: ");
+            string inputUserId = Console.ReadLine();
+
+            bool isNumber = int.TryParse(inputUserId, out userId);
+            if (!isNumber)
+            {
+                Console.WriteLine("Please enter a User ID number!");
+            }
+            //else if(bankingService.GetUserList(UserService.UserId).Contains())
+
+            Console.Write("Please enter amount of transfer");
+            string inputTransferAmount = Console.ReadLine();
+
+            bool isDecimal = decimal.TryParse(inputTransferAmount, out transferAmount);
+            if (!isDecimal)
+            {
+                Console.WriteLine("Please enter a decimal amount!");
+            }
+            //else if ()//make sure amount is able to be removed from balance
+            //make sure amount not 0 OR negative
         }
     }
 }
