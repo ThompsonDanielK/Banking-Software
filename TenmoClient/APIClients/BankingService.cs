@@ -45,10 +45,33 @@ namespace TenmoClient.APIClients
 
             if (!response.IsSuccessful)
             {
-                Console.WriteLine($"Could not get bugs. Error status code {(int)response.StatusCode}");
+                Console.WriteLine($"Could not get users. Error status code {(int)response.StatusCode}");
             }
 
             return response.Data;
+        }
+
+        public bool SendTransfer(Transfers transfer)
+        {
+            RestRequest request = new RestRequest($"{API_BASE_URL}banking/transfers");
+            request.AddJsonBody(transfer);
+
+            IRestResponse<Transfers> response = client.Post<Transfers>(request);
+
+            if (response.ResponseStatus != ResponseStatus.Completed)
+            {
+                Console.WriteLine("Could not communicate with the server");
+                return false;
+            }
+
+            if (!response.IsSuccessful)
+            {
+                Console.WriteLine($"Could not transfer. Error status code {(int)response.StatusCode}");
+                return false;
+            }
+
+            return true;
+
         }
     }
 }

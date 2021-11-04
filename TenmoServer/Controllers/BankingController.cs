@@ -38,5 +38,19 @@ namespace TenmoServer.Controllers
 
             return Ok(users);
         }
+
+        [HttpPost("transfers")]
+        public ActionResult PostTransfer(Transfers transfer)
+        {
+            bool success = banking.PostTransferSQL(transfer.recipientID, transfer.senderId, transfer.transferAmount);
+
+            if(success)
+            {
+                return Ok(transfer);
+            }
+
+            return BadRequest(new { message = "This request could not be completed." });
+
+        }
     }
 }

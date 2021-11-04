@@ -97,6 +97,22 @@ namespace TenmoClient
                             if (userId != 0)
                             {
                                 decimal transferAmount = UserInputAmount();
+
+                                Transfers transfer = new Transfers();
+                                transfer.senderId = UserService.UserId;
+                                transfer.recipientID = userId;
+                                transfer.transferAmount = transferAmount;
+
+                                bool success = bankingService.SendTransfer(transfer);
+
+                                if(!success)
+                                {
+                                    Console.WriteLine("We could not complete your request");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Transfer Completed.");
+                                }
                             }
                             break;
 
@@ -177,7 +193,7 @@ namespace TenmoClient
             while (transferAmountLoop)
             {
 
-                Console.Write("Please enter amount of transfer");
+                Console.Write("Please enter amount of transfer: ");
                 string inputTransferAmount = Console.ReadLine();
 
                 bool isDecimal = decimal.TryParse(inputTransferAmount, out transferAmount);
@@ -205,7 +221,7 @@ namespace TenmoClient
             return transferAmount;
         }
 
-        private static int UserInputId()
+        private int UserInputId()
         {
             int userId = 0;
             bool transferIdLoop = true;
@@ -219,7 +235,16 @@ namespace TenmoClient
                 {
                     Console.WriteLine("Please enter a User ID number!");
                 }
-                //else if(bankingService.GetUserList(UserService.UserId).Contains())
+                else
+                {
+                    foreach (User user in bankingService.GetUserList(UserService.UserId))
+                    {
+                        if (user.UserId == userId)
+                        {
+                            return userId;
+                        }
+                    }
+                }               
             }
 
             return userId;

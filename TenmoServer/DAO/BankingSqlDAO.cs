@@ -76,5 +76,76 @@ namespace TenmoServer.DAO
             }
             return users;
         }
+
+        public bool PostTransferSQL (int recipientId, int senderId, decimal transferAmount)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    conn.Open();
+
+                    const string transferSql = "INSERT INTO transfers " +
+                        "(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
+                        "VALUES (@transferTypeId, @transferStatusId, @accountFrom, @accountTo, @amount); " +
+                        "UPDATE accounts SET balance = balance - @amount " +
+                        "WHERE user_id = @senderId; " +
+                        "UPDATE accounts SET balance = balance + @amount " +
+                        "WHERE user_id = @recipientId;";
+
+                    using (SqlCommand command = new SqlCommand(transferSql, conn))
+                    {
+                        command.Parameters.AddWithValue("@transferTypeId", 1001);
+                        command.Parameters.AddWithValue("@transferStatusId", 2002);                        
+                        command.Parameters.AddWithValue("@accountFrom", GetAccountId(senderId));
+                        command.Parameters.AddWithValue("@accountTo", GetAccountId(recipientId));
+                        command.Parameters.AddWithValue("@amount", transferAmount);
+                        command.Parameters.AddWithValue("@senderId", senderId);
+                        command.Parameters.AddWithValue("@recipientId", recipientId);
+                        int returnedRows = command.ExecuteNonQuery();
+
+                        if (returnedRows == 0)
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+            catch (SqlException err)
+            {
+                Console.WriteLine("Problem querying database " + err.Message);
+            }
+            return true;
+        }
+
+        private int GetAccountId (int id)
+        {
+            int accountId = 0;
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    conn.Open();
+
+                    const string retrieveAccountIdSql = "SELECT account_id " +
+                        "FROM accounts " +
+                        "WHERE user_id = @userId";
+
+                    using (SqlCommand command = new SqlCommand(retrieveAccountIdSql, conn))
+                    {
+                        command.Parameters.AddWithValue("@userId", id);
+
+                        accountId = Convert.ToInt32(command.ExecuteScalar());
+                        
+                        
+                    }
+                }
+            }
+            catch (SqlException err)
+            {
+                Console.WriteLine("Problem querying database " + err.Message);
+            }
+            return accountId;
+        }
     }
 }
