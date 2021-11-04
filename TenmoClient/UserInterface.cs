@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using TenmoClient.APIClients;
 using TenmoClient.Data;
+using TenmoServer.Models;
 
 namespace TenmoClient
 {
@@ -90,7 +92,7 @@ namespace TenmoClient
                             break;
 
                         case 4: // Send TE Bucks
-                            Console.WriteLine("NOT IMPLEMENTED!"); // TODO: Implement me
+                            ListUsers();
                             break;
 
                         case 5: // Request TE Bucks
@@ -136,6 +138,29 @@ namespace TenmoClient
                 LoginUser loginUser = consoleService.PromptForLogin();
                 authService.Login(loginUser);
             }
+        }
+
+        private void ListUsers()
+        {
+            List<User> userList = bankingService.GetUserList(UserService.UserId);
+
+            if (userList.Count < 1)
+            {
+                Console.WriteLine("We could not complete your request");
+                return;
+            }
+
+            Console.WriteLine("-------------------------------------------");
+            Console.WriteLine("Users");
+            Console.WriteLine($"{"ID",-10}{"Name",-20}");
+            Console.WriteLine("-------------------------------------------");
+
+            foreach (User user in userList)
+            {
+                Console.WriteLine($"{user.UserId,-10}{user.Username,-20}");
+            }
+
+            Console.WriteLine("---------");
         }
     }
 }
