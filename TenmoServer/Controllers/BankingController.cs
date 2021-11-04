@@ -52,5 +52,13 @@ namespace TenmoServer.Controllers
             return BadRequest(new { message = "This request could not be completed." });
 
         }
+
+        [HttpGet("{id}/TransferList")]
+        public ActionResult GetTransferList(int id)
+        {
+            List<Transfers> transfers = banking.GetTransferList(id);
+
+            return Ok(transfers);
+        }
     }
 }

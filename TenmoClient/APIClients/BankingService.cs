@@ -73,5 +73,24 @@ namespace TenmoClient.APIClients
             return true;
 
         }
+
+        public List<Transfers> GetTransferList(int id)
+        {
+            RestRequest request = new RestRequest($"{API_BASE_URL}banking/{id}/TransferList");
+
+            IRestResponse<List<Transfers>> response = client.Get<List<Transfers>>(request);
+
+            if (response.ResponseStatus != ResponseStatus.Completed)
+            {
+                Console.WriteLine("Could not communicate with the server");
+            }
+
+            if (!response.IsSuccessful)
+            {
+                Console.WriteLine($"Could not get transfers. Error status code {(int)response.StatusCode}");
+            }
+
+            return response.Data;
+        }
     }
 }

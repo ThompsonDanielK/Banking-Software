@@ -11,6 +11,8 @@ namespace TenmoServer.DAO
         decimal GetBalanceSQL(int id);
         public IEnumerable<User> GetUserListSQL(int id);
         public bool PostTransferSQL(int recipientId, int senderId, decimal transferAmount);
+
+        public List<Transfers> GetTransferList(int userId);
     }
 
 }

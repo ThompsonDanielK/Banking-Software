@@ -77,7 +77,7 @@ namespace TenmoServer.DAO
             return users;
         }
 
-        public bool PostTransferSQL (int recipientId, int senderId, decimal transferAmount)
+        public bool PostTransferSQL(int recipientId, int senderId, decimal transferAmount)
         {
             try
             {
@@ -96,7 +96,7 @@ namespace TenmoServer.DAO
                     using (SqlCommand command = new SqlCommand(transferSql, conn))
                     {
                         command.Parameters.AddWithValue("@transferTypeId", 1001);
-                        command.Parameters.AddWithValue("@transferStatusId", 2002);                        
+                        command.Parameters.AddWithValue("@transferStatusId", 2002);
                         command.Parameters.AddWithValue("@accountFrom", GetAccountId(senderId));
                         command.Parameters.AddWithValue("@accountTo", GetAccountId(recipientId));
                         command.Parameters.AddWithValue("@amount", transferAmount);
@@ -118,7 +118,7 @@ namespace TenmoServer.DAO
             return true;
         }
 
-        private int GetAccountId (int id)
+        private int GetAccountId(int id)
         {
             int accountId = 0;
             try
@@ -136,8 +136,8 @@ namespace TenmoServer.DAO
                         command.Parameters.AddWithValue("@userId", id);
 
                         accountId = Convert.ToInt32(command.ExecuteScalar());
-                        
-                        
+
+
                     }
                 }
             }
@@ -147,5 +147,52 @@ namespace TenmoServer.DAO
             }
             return accountId;
         }
+
+        public List<Transfers> GetTransferList(int userId)
+        {
+            List<Transfers> transferList = new List<Transfers>();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    conn.Open();
+
+                    const string retrieveAccountIdSql = "SELECT t.transfer_id, t.transfer_type_id, t.account_from, t.account_to, t.amount, u.username " +
+                        "FROM transfers t INNER JOIN accounts a ON a.account_id = t.account_from OR a.account_id = t.account_to " +
+                        "INNER JOIN users u ON u.user_id = a.user_id " +
+                        "WHERE a.user_id = @userId;";
+
+                    using (SqlCommand command = new SqlCommand(retrieveAccountIdSql, conn))
+                    {
+                        command.Parameters.AddWithValue("@userId", userId);
+
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                Transfers transfers = new Transfers
+                                {
+                                    username = Convert.ToString(reader["username"]),
+                                    transferId = Convert.ToInt32(reader["transfer_id"]),
+                                    transferTypeId = Convert.ToInt32(reader["transfer_type_id"]),
+                                    recipientID = Convert.ToInt32(reader["account_to"]),
+                                    senderId = Convert.ToInt32(reader["account_from"]),
+                                    transferAmount = Convert.ToDecimal(reader["amount"])
+                                };
+
+                                transferList.Add(transfers);
+
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException err)
+            {
+                Console.WriteLine("Problem querying database " + err.Message);
+            }
+            return transferList;
+        }
+
     }
 }

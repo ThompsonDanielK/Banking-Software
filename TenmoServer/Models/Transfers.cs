@@ -13,6 +13,27 @@ namespace TenmoServer.Models
 
         public decimal transferAmount { get; set; }
 
+        public int transferTypeId { get; set; }
+
+        public string transferType
+        {
+            get
+            {
+                if(this.transferTypeId == 1001)
+                {
+                    return "from ";
+                }
+                else
+                {
+                    return "to ";
+                }
+            }
+        }
+
+        public string username { get; set; }
+
+        public int transferId { get; set; }
+
         public Transfers()
         {
 

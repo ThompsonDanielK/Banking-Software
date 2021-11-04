@@ -84,7 +84,7 @@ namespace TenmoClient
                             break;
 
                         case 2: // View Past Transfers
-                            Console.WriteLine("NOT IMPLEMENTED!"); // TODO: Implement me
+                            ListTransfers();
                             break;
 
                         case 3: // View Pending Requests
@@ -248,6 +248,29 @@ namespace TenmoClient
             }
 
             return userId;
+        }
+
+        private void ListTransfers()
+        {
+            List<Transfers> transferList = bankingService.GetTransferList(UserService.UserId);
+
+            if (transferList.Count < 1)
+            {
+                Console.WriteLine("We could not complete your request");
+                return;
+            }
+
+            Console.WriteLine("-------------------------------------------");
+            Console.WriteLine("Transfers");
+            Console.WriteLine($"{"ID",-10}{"From/To",-20}{"Amount", -10}");
+            Console.WriteLine("-------------------------------------------");
+
+            foreach (Transfers transfers in transferList)
+            {
+                Console.WriteLine($"{transfers.transferId,-10}{transfers.transferType + transfers.username,-20}{transfers.transferAmount.ToString("C"),-10}");
+            }
+
+            Console.WriteLine("---------");
         }
     }
 }
