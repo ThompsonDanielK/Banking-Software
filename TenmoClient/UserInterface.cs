@@ -93,7 +93,11 @@ namespace TenmoClient
 
                         case 4: // Send TE Bucks
                             ListUsers();
-                            TransferInput(out int userId,out decimal transferAmount);
+                            int userId = UserInputId();
+                            if (userId != 0)
+                            {
+                                decimal transferAmount = UserInputAmount();
+                            }
                             break;
 
                         case 5: // Request TE Bucks
@@ -163,14 +167,51 @@ namespace TenmoClient
 
             Console.WriteLine("---------");
         }
+        
 
-        private void TransferInput(out int userId, out decimal transferAmount)
+        private decimal UserInputAmount()
         {
-            userId = 0;
+            decimal transferAmount;
+            bool transferAmountLoop = true;
+            transferAmount = 0M;
+            while (transferAmountLoop)
+            {
+
+                Console.Write("Please enter amount of transfer");
+                string inputTransferAmount = Console.ReadLine();
+
+                bool isDecimal = decimal.TryParse(inputTransferAmount, out transferAmount);
+                if (!isDecimal)
+                {
+                    Console.WriteLine("Please enter a decimal amount!");
+
+                }
+                else if (bankingService.GetBalance(UserService.UserId) < transferAmount)
+                {
+                    Console.WriteLine("You do not have sufficient funds to make this transfer.");
+
+                }
+                else if (transferAmount <= 0M)
+                {
+                    Console.WriteLine("Please enter a valid transfer amount");
+
+                }
+                else
+                {
+                    transferAmountLoop = false;
+                }
+            }
+
+            return transferAmount;
+        }
+
+        private static int UserInputId()
+        {
+            int userId = 0;
             bool transferIdLoop = true;
             while (transferIdLoop)
             {
-                Console.Write("Please enter User ID for transfer: ");
+                Console.Write("Please enter User ID for transfer (0 to cancel): ");
                 string inputUserId = Console.ReadLine();
 
                 bool isNumber = int.TryParse(inputUserId, out userId);
@@ -181,37 +222,7 @@ namespace TenmoClient
                 //else if(bankingService.GetUserList(UserService.UserId).Contains())
             }
 
-            bool transferAmountLoop = true;
-            transferAmount = 0M;
-            while (transferAmountLoop)
-            {
-               
-                Console.Write("Please enter amount of transfer");
-                string inputTransferAmount = Console.ReadLine();
-
-                bool isDecimal = decimal.TryParse(inputTransferAmount, out transferAmount);
-                if (!isDecimal)
-                {
-                    Console.WriteLine("Please enter a decimal amount!");
-                    
-                }
-                else if (bankingService.GetBalance(UserService.UserId) < transferAmount)
-                {
-                    Console.WriteLine("You do not have sufficient funds to make this transfer.");
-                    
-                }
-                else if (transferAmount <= 0M)
-                {
-                    Console.WriteLine("Please enter a valid transfer amount");
-                   
-                }
-                else
-                {
-                    transferAmountLoop = false;
-                }
-            }
-            //else if ()//make sure amount is able to be removed from balance
-            //make sure amount not 0 OR negative
+            return userId;
         }
     }
 }
