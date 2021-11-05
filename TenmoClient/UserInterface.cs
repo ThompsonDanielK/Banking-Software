@@ -151,7 +151,7 @@ namespace TenmoClient
                 if (!success)
                 {
                     Console.WriteLine("We could not complete your request");
-                }
+                }               
                 else if (transferAmount == 0M)
                 {
                     Console.WriteLine("Transfer terminated.");
@@ -180,6 +180,10 @@ namespace TenmoClient
                 if (!isNumber)
                 {
                     Console.WriteLine("Please enter a Transfer ID number!");
+                }
+                else if (transferId == 0)
+                {
+                    return transferId;
                 }
                 else
                 {
@@ -304,7 +308,11 @@ namespace TenmoClient
                 if (!isNumber)
                 {
                     Console.WriteLine("Please enter a User ID number!");
-                }                
+                }
+                else if (userId == 0)
+                {
+                    return userId;
+                }
                 else
                 {
                     foreach (User user in bankingService.GetUserList(UserService.UserId))
