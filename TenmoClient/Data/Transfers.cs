@@ -18,11 +18,11 @@
             {
                 if (TransferTypeId == 1001)
                 {
-                    return "Send";
+                    return "Request";
                 }
                 else
                 {
-                    return "Request";
+                    return "Send";
                 }
             }
         }
