@@ -139,7 +139,7 @@ namespace TenmoClient
             int userId = UserInputId();
             if (userId != 0)
             {
-                decimal transferAmount = UserInputAmount();
+                decimal transferAmount = UserInputAmount();                
 
                 Transfers transfer = new Transfers();
                 transfer.SenderID = UserService.UserId;
@@ -262,7 +262,7 @@ namespace TenmoClient
                     Console.WriteLine("Please enter a decimal amount!");
 
                 }
-                else if (bankingService.GetBalance(UserService.UserId) < transferAmount)
+                else if (bankingService.GetBalance(UserService.UserId) < transferAmount || (bankingService.GetBalance(UserService.UserId) - transferAmount) <= 0)
                 {
                     Console.WriteLine("You do not have sufficient funds to make this transfer.");
 
