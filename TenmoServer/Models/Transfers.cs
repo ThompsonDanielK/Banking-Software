@@ -1,27 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace TenmoServer.Models
+﻿namespace TenmoServer.Models
 {
     public class Transfers
     {
-        public int recipientID { get; set; }
+        public int RecipientID { get; set; }
 
-        public int senderId { get; set; }
+        public int SenderId { get; set; }
 
-        public decimal transferAmount { get; set; }
+        public decimal TransferAmount { get; set; }
 
-        public int transferTypeId { get; set; }     
+        public int TransferTypeId { get; set; }     
 
-        public string transferType { get; set; } 
+        public string TransferType { get; set; } 
         
-        public string transferTypeDetails
+        public string TransferTypeDetails
         {
             get
             {
-                if (transferTypeId == 1001)
+                if (TransferTypeId == 1001)
                 {
                     return "Send";
                 }
@@ -32,19 +27,19 @@ namespace TenmoServer.Models
             }
         }
 
-        public string username { get; set; }
+        public string Username { get; set; }
 
-        public string sendersUsername { get; set; }
+        public string SendersUsername { get; set; }
 
-        public string recipientsUsername { get; set; }
+        public string RecipientsUsername { get; set; }
 
-        public int transferStatusId { get; set; }
+        public int TransferStatusId { get; set; }
 
-        public string transferStatus
+        public string TransferStatus
         {
             get
             {
-                switch (transferStatusId)
+                switch (TransferStatusId)
                 {
                     case 2001:
                         return "Pending";
@@ -62,7 +57,7 @@ namespace TenmoServer.Models
             }
         }
 
-        public int transferId { get; set; }
+        public int TransferId { get; set; }
 
         public Transfers()
         {

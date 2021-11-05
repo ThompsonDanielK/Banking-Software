@@ -209,25 +209,25 @@ namespace TenmoServer.DAO
                             {
                                 Transfers transfers = new Transfers
                                 {                                    
-                                    transferId = Convert.ToInt32(reader["transfer_id"]),
-                                    transferStatusId = Convert.ToInt32(reader["transfer_status_id"]),
-                                    transferTypeId = Convert.ToInt32(reader["transfer_type_id"]),
-                                    recipientID = Convert.ToInt32(reader["account_to"]),
-                                    senderId = Convert.ToInt32(reader["account_from"]),
-                                    transferAmount = Convert.ToDecimal(reader["amount"]),
-                                    recipientsUsername = Convert.ToString(reader["receiverUsername"]),
-                                    sendersUsername = Convert.ToString(reader["senderUsername"])
+                                    TransferId = Convert.ToInt32(reader["transfer_id"]),
+                                    TransferStatusId = Convert.ToInt32(reader["transfer_status_id"]),
+                                    TransferTypeId = Convert.ToInt32(reader["transfer_type_id"]),
+                                    RecipientID = Convert.ToInt32(reader["account_to"]),
+                                    SenderId = Convert.ToInt32(reader["account_from"]),
+                                    TransferAmount = Convert.ToDecimal(reader["amount"]),
+                                    RecipientsUsername = Convert.ToString(reader["receiverUsername"]),
+                                    SendersUsername = Convert.ToString(reader["senderUsername"])
                                 };
 
-                                if (transfers.senderId == GetAccountId(userId))
+                                if (transfers.SenderId == GetAccountId(userId))
                                 {
-                                    transfers.transferType = "To: ";
-                                    transfers.username = Convert.ToString(reader["receiverUsername"]);
+                                    transfers.TransferType = "To: ";
+                                    transfers.Username = Convert.ToString(reader["receiverUsername"]);
                                 }
                                 else
                                 {
-                                    transfers.transferType = "From: ";
-                                    transfers.username = Convert.ToString(reader["senderUsername"]);
+                                    transfers.TransferType = "From: ";
+                                    transfers.Username = Convert.ToString(reader["senderUsername"]);
                                 }
 
                                 transferList.Add(transfers);

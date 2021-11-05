@@ -76,7 +76,14 @@ namespace TenmoServer.Controllers
         [HttpPost("transfers")]
         public ActionResult PostTransfer(Transfers transfer)
         {
-            bool success = banking.PostTransferSQL(transfer.recipientID, transfer.senderId, transfer.transferAmount);
+            int userId = int.Parse(this.User.FindFirst("sub").Value);
+
+            if (transfer.SenderId != userId)
+            {
+                return Forbid();
+            }
+
+            bool success = banking.PostTransferSQL(transfer.RecipientID, transfer.SenderId, transfer.TransferAmount);
 
             if(success)
             {
