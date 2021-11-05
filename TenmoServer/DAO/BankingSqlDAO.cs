@@ -7,9 +7,17 @@ using TenmoServer.Models;
 
 namespace TenmoServer.DAO
 {
+    /// <summary>
+    /// Handles all database queries for banking
+    /// </summary>
     public class BankingSqlDAO : IBankingDAO
     {
         private readonly string connStr;
+
+        /// <summary>
+        /// Class constructor that validates connection string
+        /// </summary>
+        /// <param name="connectionString">connection string</param>
         public BankingSqlDAO(string connectionString)
         {
             if (string.IsNullOrWhiteSpace(connectionString)) throw new ArgumentNullException(nameof(connectionString));
@@ -17,6 +25,11 @@ namespace TenmoServer.DAO
             this.connStr = connectionString;
         }
 
+        /// <summary>
+        /// Retrieves balance from database
+        /// </summary>
+        /// <param name="id">User ID</param>
+        /// <returns>User Account Balance</returns>
         public decimal GetBalanceSQL(int id)
         {
             decimal balance;
@@ -39,10 +52,14 @@ namespace TenmoServer.DAO
             return balance;
         }
 
+        /// <summary>
+        /// Queries Database for users(aside from logged in user) and adds them to a list
+        /// </summary>
+        /// <param name="id">Logged in user ID</param>
+        /// <returns>List of users</returns>
         public IEnumerable<User> GetUserListSQL(int id)
         {
             List<User> users = new List<User>();
-
             try
             {
                 using (SqlConnection conn = new SqlConnection(connStr))
@@ -77,6 +94,13 @@ namespace TenmoServer.DAO
             return users;
         }
 
+        /// <summary>
+        /// Inserting transfers into database
+        /// </summary>
+        /// <param name="recipientId">ID of transfer recipient</param>
+        /// <param name="senderId">ID of transfer sender</param>
+        /// <param name="transferAmount">amount of transfer</param>
+        /// <returns>Success state</returns>
         public bool PostTransferSQL(int recipientId, int senderId, decimal transferAmount)
         {
             try
@@ -102,6 +126,7 @@ namespace TenmoServer.DAO
                         command.Parameters.AddWithValue("@amount", transferAmount);
                         command.Parameters.AddWithValue("@senderId", senderId);
                         command.Parameters.AddWithValue("@recipientId", recipientId);
+
                         int returnedRows = command.ExecuteNonQuery();
 
                         if (returnedRows == 0)
@@ -118,6 +143,11 @@ namespace TenmoServer.DAO
             return true;
         }
 
+        /// <summary>
+        /// Queries database to retrieve account ID based on user ID
+        /// </summary>
+        /// <param name="id">User ID</param>
+        /// <returns>Account ID</returns>
         private int GetAccountId(int id)
         {
             int accountId = 0;
@@ -136,8 +166,6 @@ namespace TenmoServer.DAO
                         command.Parameters.AddWithValue("@userId", id);
 
                         accountId = Convert.ToInt32(command.ExecuteScalar());
-
-
                     }
                 }
             }
@@ -148,6 +176,11 @@ namespace TenmoServer.DAO
             return accountId;
         }
 
+        /// <summary>
+        /// Queries database for all transfers related to logged in user and adds them to a list
+        /// </summary>
+        /// <param name="userId">ID of logged in user</param>
+        /// <returns>List of transfers</returns>
         public List<Transfers> GetTransferList(int userId)
         {
             List<Transfers> transferList = new List<Transfers>();
@@ -165,7 +198,6 @@ namespace TenmoServer.DAO
                         "INNER JOIN accounts ato ON ato.account_id = t.account_to " +
                         "INNER JOIN users uto ON uto.user_id = ato.user_id " +
                         "WHERE a.user_id = @userId OR ato.user_id = @userId";
-
 
                     using (SqlCommand command = new SqlCommand(retrieveAccountIdSql, conn))
                     {
@@ -185,8 +217,8 @@ namespace TenmoServer.DAO
                                     transferAmount = Convert.ToDecimal(reader["amount"]),
                                     recipientsUsername = Convert.ToString(reader["receiverUsername"]),
                                     sendersUsername = Convert.ToString(reader["senderUsername"])
-
                                 };
+
                                 if (transfers.senderId == GetAccountId(userId))
                                 {
                                     transfers.transferType = "To: ";
@@ -196,11 +228,9 @@ namespace TenmoServer.DAO
                                 {
                                     transfers.transferType = "From: ";
                                     transfers.username = Convert.ToString(reader["senderUsername"]);
-
                                 }
 
                                 transferList.Add(transfers);
-
                             }
                         }
                     }
@@ -212,7 +242,5 @@ namespace TenmoServer.DAO
             }
             return transferList;
         }
-
-        
     }
 }

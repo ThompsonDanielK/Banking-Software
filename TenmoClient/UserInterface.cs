@@ -6,6 +6,9 @@ using TenmoServer.Models;
 
 namespace TenmoClient
 {
+    /// <summary>
+    /// Handles user input and display
+    /// </summary>
     public class UserInterface
     {
         private readonly ConsoleService consoleService = new ConsoleService();
@@ -14,6 +17,9 @@ namespace TenmoClient
         
         private bool quitRequested = false;
 
+        /// <summary>
+        /// Displays Main Menu
+        /// </summary>
         public void Start()
         {
             while (!quitRequested)
@@ -28,6 +34,9 @@ namespace TenmoClient
             }
         }
 
+        /// <summary>
+        /// Displays log in menu
+        /// </summary>
         private void ShowLogInMenu()
         {
             Console.WriteLine("Welcome to TEnmo!");
@@ -53,6 +62,9 @@ namespace TenmoClient
             }
         }
 
+        /// <summary>
+        ///  Displays main menu
+        /// </summary>
         private void ShowMainMenu()
         {
             int menuSelection;
@@ -80,7 +92,6 @@ namespace TenmoClient
                     {
                         case 1: // View Balance
                             Console.WriteLine($"Your current account balance is: {bankingService.GetBalance(UserService.UserId).ToString("C")}");
-                            //Console.WriteLine("NOT IMPLEMENTED!"); // TODO: Implement me
                             break;
 
                         case 2: // View Past Transfers
@@ -95,27 +106,7 @@ namespace TenmoClient
 
                         case 4: // Send TE Bucks
                             ListUsers();
-                            int userId = UserInputId();
-                            if (userId != 0)
-                            {
-                                decimal transferAmount = UserInputAmount();
-
-                                Transfers transfer = new Transfers();
-                                transfer.senderId = UserService.UserId;
-                                transfer.recipientID = userId;
-                                transfer.transferAmount = transferAmount;
-
-                                bool success = bankingService.SendTransfer(transfer);
-
-                                if(!success)
-                                {
-                                    Console.WriteLine("We could not complete your request");
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Transfer Completed.");
-                                }
-                            }
+                            SendTransfer();
                             break;
 
                         case 5: // Request TE Bucks
@@ -140,6 +131,38 @@ namespace TenmoClient
             } while (menuSelection != 0);
         }
 
+        /// <summary>
+        /// Records user input and sends transfer
+        /// </summary>
+        private void SendTransfer()
+        {
+            int userId = UserInputId();
+            if (userId != 0)
+            {
+                decimal transferAmount = UserInputAmount();
+
+                Transfers transfer = new Transfers();
+                transfer.senderId = UserService.UserId;
+                transfer.recipientID = userId;
+                transfer.transferAmount = transferAmount;
+
+                bool success = bankingService.SendTransfer(transfer);
+
+                if (!success)
+                {
+                    Console.WriteLine("We could not complete your request");
+                }
+                else
+                {
+                    Console.WriteLine("Transfer Completed.");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Records and Validates user input for transfer Id
+        /// </summary>
+        /// <returns>Transfer Id</returns>
         private int GetTransferId()
         {
             int transferId = 0;
@@ -158,12 +181,13 @@ namespace TenmoClient
                 {
                     transferIdLoop = false;
                 }
-                
             }
-
             return transferId;
         }
 
+        /// <summary>
+        /// Takes user input for account registration
+        /// </summary>
         private void HandleUserRegister()
         {
             bool isRegistered = false;
@@ -178,6 +202,9 @@ namespace TenmoClient
             Console.WriteLine("Registration successful. You can now log in.");
         }
 
+        /// <summary>
+        /// Handles user login
+        /// </summary>
         private void HandleUserLogin()
         {
             while (!UserService.IsLoggedIn) //will keep looping until user is logged in
@@ -187,6 +214,9 @@ namespace TenmoClient
             }
         }
 
+        /// <summary>
+        /// Validates and displays a list of users for transfers
+        /// </summary>
         private void ListUsers()
         {
             List<User> userList = bankingService.GetUserList(UserService.UserId);
@@ -210,12 +240,16 @@ namespace TenmoClient
             Console.WriteLine("---------");
         }
         
-
+        /// <summary>
+        /// Records user input for transfer amount
+        /// </summary>
+        /// <returns>Transfer Amount</returns>
         private decimal UserInputAmount()
         {
             decimal transferAmount;
             bool transferAmountLoop = true;
             transferAmount = 0M;
+
             while (transferAmountLoop)
             {
 
@@ -247,6 +281,10 @@ namespace TenmoClient
             return transferAmount;
         }
 
+        /// <summary>
+        /// Records user input user ID for transfer
+        /// </summary>
+        /// <returns>User ID</returns>
         private int UserInputId()
         {
             int userId = 0;
@@ -276,6 +314,10 @@ namespace TenmoClient
             return userId;
         }
 
+        /// <summary>
+        /// Displays a list of past transfers to user
+        /// </summary>
+        /// <returns></returns>
         private List<Transfers> ListTransfers()
         {
             List<Transfers> transferList = bankingService.GetTransferList(UserService.UserId);
@@ -301,9 +343,12 @@ namespace TenmoClient
             return transferList;
         }
 
+        /// <summary>
+        /// Displays Transfer Details
+        /// </summary>
+        /// <param name="transfer"></param>
         private void ListTransfersDetails(Transfers transfer)
         {          
-
             Console.WriteLine("--------------------------------------------");
             Console.WriteLine("Transfer Details");
             Console.WriteLine("--------------------------------------------");
@@ -313,7 +358,6 @@ namespace TenmoClient
             Console.WriteLine($"Type: {transfer.transferTypeDetails}");
             Console.WriteLine($"Status: {transfer.transferStatus}");
             Console.WriteLine($"Amount: {transfer.transferAmount.ToString("C")}");
-            
         }
     }
 }
