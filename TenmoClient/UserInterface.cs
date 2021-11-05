@@ -152,6 +152,10 @@ namespace TenmoClient
                 {
                     Console.WriteLine("We could not complete your request");
                 }
+                else if (transferAmount == 0M)
+                {
+                    Console.WriteLine("Transfer terminated.");
+                }
                 else
                 {
                     Console.WriteLine("Transfer Completed.");
@@ -169,7 +173,7 @@ namespace TenmoClient
             bool transferIdLoop = true;
             while (transferIdLoop)
             {
-                Console.WriteLine("Please enter transfer ID to view details (0 to cancel): ");
+                Console.Write("Please enter transfer ID to view details (0 to cancel): ");
                 string inputTransferId = Console.ReadLine();
 
                 bool isNumber = int.TryParse(inputTransferId, out transferId);
@@ -265,6 +269,8 @@ namespace TenmoClient
                 else if (bankingService.GetBalance(UserService.UserId) < transferAmount || (bankingService.GetBalance(UserService.UserId) - transferAmount) <= 0)
                 {
                     Console.WriteLine("You do not have sufficient funds to make this transfer.");
+                    transferAmountLoop = false;
+                    transferAmount = 0M;
 
                 }
                 else if (transferAmount <= 0M)
@@ -298,7 +304,7 @@ namespace TenmoClient
                 if (!isNumber)
                 {
                     Console.WriteLine("Please enter a User ID number!");
-                }
+                }                
                 else
                 {
                     foreach (User user in bankingService.GetUserList(UserService.UserId))
@@ -348,7 +354,12 @@ namespace TenmoClient
         /// </summary>
         /// <param name="transfer"></param>
         private void ListTransfersDetails(Transfers transfer)
-        {          
+        {
+            if(transfer.TransferId == 0)
+            {
+                return;
+            }
+
             Console.WriteLine("--------------------------------------------");
             Console.WriteLine("Transfer Details");
             Console.WriteLine("--------------------------------------------");
