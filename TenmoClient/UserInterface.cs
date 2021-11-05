@@ -142,9 +142,9 @@ namespace TenmoClient
                 decimal transferAmount = UserInputAmount();
 
                 Transfers transfer = new Transfers();
-                transfer.senderId = UserService.UserId;
-                transfer.recipientID = userId;
-                transfer.transferAmount = transferAmount;
+                transfer.SenderID = UserService.UserId;
+                transfer.RecipientID = userId;
+                transfer.TransferAmount = transferAmount;
 
                 bool success = bankingService.SendTransfer(transfer);
 
@@ -335,7 +335,7 @@ namespace TenmoClient
 
             foreach (Transfers transfers in transferList)
             {
-                Console.WriteLine($"{transfers.transferId,-10}{transfers.transferType + transfers.username,-20}{transfers.transferAmount.ToString("C"),-10}");
+                Console.WriteLine($"{transfers.TransferId,-10}{transfers.TransferType + transfers.Username,-20}{transfers.TransferAmount.ToString("C"),-10}");
             }
 
             Console.WriteLine("---------");
@@ -352,12 +352,12 @@ namespace TenmoClient
             Console.WriteLine("--------------------------------------------");
             Console.WriteLine("Transfer Details");
             Console.WriteLine("--------------------------------------------");
-            Console.WriteLine($"Id: {transfer.transferId}");
-            Console.WriteLine($"From: {transfer.sendersUsername}");
-            Console.WriteLine($"To: {transfer.recipientsUsername}");
-            Console.WriteLine($"Type: {transfer.transferTypeDetails}");
-            Console.WriteLine($"Status: {transfer.transferStatus}");
-            Console.WriteLine($"Amount: {transfer.transferAmount.ToString("C")}");
+            Console.WriteLine($"Id: {transfer.TransferId}");
+            Console.WriteLine($"From: {transfer.SendersUsername}");
+            Console.WriteLine($"To: {transfer.RecipientsUsername}");
+            Console.WriteLine($"Type: {transfer.TransferTypeDetails}");
+            Console.WriteLine($"Status: {transfer.TransferStatus}");
+            Console.WriteLine($"Amount: {transfer.TransferAmount.ToString("C")}");
         }
     }
 }

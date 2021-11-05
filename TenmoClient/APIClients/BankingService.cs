@@ -134,7 +134,7 @@ namespace TenmoClient.APIClients
         {
             foreach (Transfers transfer in transferList)
             {
-                if(transfer.transferId == transferId)
+                if(transfer.TransferId == transferId)
                 {
                     return transfer;
                 }
